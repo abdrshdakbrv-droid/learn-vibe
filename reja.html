@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soliq Bot — Reja</title>
+<style>
+  :root{
+    --bg:#0f172a;
+    --bg2:#1e293b;
+    --card:#ffffff;
+    --ink:#0f172a;
+    --muted:#64748b;
+    --line:#e2e8f0;
+    --blue:#2563eb;
+    --teal:#0d9488;
+    --gold:#d97706;
+    --green:#16a34a;
+    --red:#dc2626;
+    --soft:#f1f5f9;
+    --shadow:0 10px 30px rgba(15,23,42,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:var(--soft);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:0 20px}
+
+  /* HERO */
+  .hero{
+    background:radial-gradient(1200px 500px at 20% -10%,#1d4ed8 0%,transparent 60%),
+               radial-gradient(900px 500px at 100% 0%,#0d9488 0%,transparent 55%),
+               linear-gradient(160deg,#0f172a,#1e293b);
+    color:#fff;padding:70px 0 90px;position:relative;overflow:hidden;
+  }
+  .hero .wrap{position:relative;z-index:2}
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+    padding:7px 14px;border-radius:999px;font-size:13px;font-weight:600;letter-spacing:.3px;
+    backdrop-filter:blur(6px);margin-bottom:22px;
+  }
+  .hero h1{font-size:42px;line-height:1.15;font-weight:800;letter-spacing:-.5px;margin-bottom:16px}
+  .hero h1 span{background:linear-gradient(90deg,#7dd3fc,#5eead4);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{font-size:18px;color:#cbd5e1;max-width:680px}
+  .chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+  .chip{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.16);padding:8px 14px;border-radius:10px;font-size:14px;color:#e2e8f0}
+  .chip b{color:#fff}
+
+  /* SECTION */
+  section{padding:54px 0}
+  .kicker{color:var(--teal);font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+  h2{font-size:28px;font-weight:800;letter-spacing:-.4px;margin-bottom:10px}
+  .lead{color:var(--muted);font-size:17px;max-width:720px;margin-bottom:28px}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+  .pad{padding:26px}
+
+  /* simple explanation */
+  .simple{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .simple .card{padding:24px}
+  .simple .ic{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px}
+  .simple h3{font-size:18px;margin-bottom:6px}
+  .simple p{color:var(--muted);font-size:15px}
+
+  /* compare */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px}
+  .opt{border-radius:16px;padding:26px;border:2px solid var(--line);background:#fff;position:relative}
+  .opt.bad{background:#fff5f5;border-color:#fecaca}
+  .opt.good{background:#f0fdf4;border-color:#bbf7d0}
+  .opt .tag{position:absolute;top:-13px;right:20px;font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;color:#fff}
+  .opt.bad .tag{background:var(--red)}
+  .opt.good .tag{background:var(--green)}
+  .opt h3{font-size:20px;margin-bottom:4px}
+  .opt .sub{font-size:13px;color:var(--muted);margin-bottom:16px}
+  .opt ul{list-style:none}
+  .opt li{display:flex;gap:10px;align-items:flex-start;padding:7px 0;font-size:15px}
+  .opt li .m{flex:0 0 22px;font-weight:800}
+  .opt.bad li .m{color:var(--red)}
+  .opt.good li .m{color:var(--green)}
+
+  /* flow */
+  .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:0;align-items:stretch}
+  .step{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 18px;text-align:center;position:relative}
+  .step .n{width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+  .step .e{font-size:30px;margin-bottom:8px}
+  .step h4{font-size:15px;margin-bottom:4px}
+  .step p{font-size:13px;color:var(--muted)}
+  .arrow{display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:26px;font-weight:700}
+  @media(max-width:760px){
+    .flow{grid-template-columns:1fr}
+    .arrow{transform:rotate(90deg);padding:6px 0}
+  }
+
+  /* architecture */
+  .arch{display:grid;gap:16px}
+  .lane{display:grid;grid-template-columns:170px 1fr;gap:16px;align-items:center}
+  .lane .label{font-weight:700;font-size:15px;padding:14px;border-radius:12px;color:#fff;text-align:center}
+  .lane.one .label{background:linear-gradient(135deg,#7c3aed,#6d28d9)}
+  .lane.two .label{background:linear-gradient(135deg,#0d9488,#0f766e)}
+  .lane .boxes{display:flex;gap:10px;flex-wrap:wrap}
+  .pill{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14px;box-shadow:var(--shadow)}
+  .pill b{display:block;font-size:12px;color:var(--blue)}
+  @media(max-width:680px){.lane{grid-template-columns:1fr}}
+
+  /* timeline */
+  .tl{position:relative;margin-left:8px}
+  .tl::before{content:"";position:absolute;left:18px;top:6px;bottom:6px;width:3px;background:linear-gradient(var(--blue),var(--teal));border-radius:3px}
+  .ti{position:relative;padding:0 0 26px 56px}
+  .ti .dot{position:absolute;left:6px;top:2px;width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--blue)}
+  .ti h4{font-size:17px;margin-bottom:4px}
+  .ti p{color:var(--muted);font-size:15px}
+  .ti .file{display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:6px;padding:2px 8px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;color:var(--ink);margin-top:8px}
+
+  /* tech grid */
+  .tech{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .tech .card{padding:20px}
+  .tech .e{font-size:26px;margin-bottom:10px}
+  .tech h4{font-size:16px;margin-bottom:3px}
+  .tech p{font-size:13.5px;color:var(--muted)}
+  .tech .free{display:inline-block;margin-top:10px;font-size:12px;font-weight:700;color:var(--green);background:#f0fdf4;border:1px solid #bbf7d0;padding:3px 9px;border-radius:999px}
+  @media(max-width:760px){.tech,.simple,.compare{grid-template-columns:1fr}}
+
+  /* cost */
+  .cost{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .costcard{padding:24px}
+  .row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px dashed var(--line);font-size:15px}
+  .row:last-child{border-bottom:0}
+  .price{font-weight:700}
+  .free-t{color:var(--green)}
+  .pay-t{color:var(--gold)}
+  .note-box{background:linear-gradient(135deg,#fffbeb,#fff7ed);border:1px solid #fde68a;border-radius:14px;padding:20px;font-size:15px}
+  .note-box b{color:var(--gold)}
+
+  /* legal */
+  .legal{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .legal .item{display:flex;gap:14px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px}
+  .legal .e{font-size:24px}
+  .legal h4{font-size:15px;margin-bottom:3px}
+  .legal p{font-size:14px;color:var(--muted)}
+  @media(max-width:680px){.cost,.legal{grid-template-columns:1fr}}
+
+  footer{background:var(--bg);color:#94a3b8;padding:34px 0;text-align:center;font-size:14px}
+  footer b{color:#e2e8f0}
+
+  .hl{background:linear-gradient(transparent 60%,#bfdbfe 60%);padding:0 2px;font-weight:600;color:var(--ink)}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap">
+    <div class="badge">📋 Loyiha rejasi · sodda tilda</div>
+    <h1>O'zbekiston Soliq kodeksi bo'yicha<br><span>aqlli Telegram bot</span></h1>
+    <p>Odamlar va kompaniyalar soliq haqida savol berganda — oddiy savolmi yoki murakkab holatmi — Soliq kodeksiga tayanib javob beradigan bot. Mana, uni qanday qilib eng oson va eng arzon yo'l bilan yasaymiz.</p>
+    <div class="chips">
+      <div class="chip">🌐 Manba: <b>lex.uz</b></div>
+      <div class="chip">🗣️ Til: <b>O'zbek + Rus</b></div>
+      <div class="chip">💸 Boshlash: <b>eng arzon</b></div>
+    </div>
+  </div>
+</div>
+
+<!-- WHAT IS IT -->
+<section>
+  <div class="wrap">
+    <div class="kicker">Bu nima</div>
+    <h2>Oddiy qilib aytganda</h2>
+    <p class="lead">Bot — bu Telegramdagi "raqamli soliq maslahatchisi". Foydalanuvchi savol yozadi, bot Soliq kodeksidan kerakli moddani topadi va o'sha moddaga asoslanib tushunarli javob beradi.</p>
+    <div class="simple">
+      <div class="card">
+        <div class="ic" style="background:#eff6ff;color:#2563eb">💬</div>
+        <h3>Foydalanuvchi savol beradi</h3>
+        <p>"Yakka tartibdagi tadbirkor qanday soliq to'laydi?" yoki ruscha savol — farqi yo'q.</p>
+      </div>
+      <div class="card">
+        <div class="ic" style="background:#f0fdfa;color:#0d9488">⚖️</div>
+        <h3>Bot kodeksdan javob topadi</h3>
+        <p>Kerakli moddani topib, sodda tilda tushuntiradi va <span class="hl">qaysi moddaga</span> tayanganini ko'rsatadi.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY IDEA: RAG vs FINE-TUNING -->
+<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="kicker">Asosiy qaror</div>
+    <h2>Modelni "o'qitish" emas — kodeksni "yoniga qo'yish"</h2>
+    <p class="lead">Ko'pchilik AI ni o'z ma'lumoti bilan "train qilish" (fine-tuning) kerak deb o'ylaydi. Aslida bu qimmat va xato beradi. Biz <b>RAG</b> degan ancha oson yo'lni tanlaymiz: AI ga har safar kerakli moddani topib beramiz, u o'sha matnga qarab javob yozadi.</p>
+    <div class="compare">
+      <div class="opt bad">
+        <span class="tag">Tavsiya etilmaydi</span>
+        <h3>🛠️ Fine-tuning (train qilish)</h3>
+        <div class="sub">Modelni qaytadan o'qitish</div>
+        <ul>
+          <li><span class="m">✕</span> Qimmat va texnik jihatdan murakkab</li>
+          <li><span class="m">✕</span> Model "o'ylab topib" gapirishi mumkin</li>
+          <li><span class="m">✕</span> Kodeks o'zgarsa — hammasini qaytadan o'qitish kerak</li>
+          <li><span class="m">✕</span> Manbani (modda raqamini) ko'rsata olmaydi</li>
+        </ul>
+      </div>
+      <div class="opt good">
+        <span class="tag">Biz tanlaymiz</span>
+        <h3>📚 RAG (kodeksni topib berish)</h3>
+        <div class="sub">Retrieval-Augmented Generation</div>
+        <ul>
+          <li><span class="m">✓</span> Oson va arzon — modelni o'qitish shart emas</li>
+          <li><span class="m">✓</span> Faqat haqiqiy moddaga tayanadi (xato kam)</li>
+          <li><span class="m">✓</span> Kodeks o'zgarsa — faqat matnni yangilaymiz</li>
+          <li><span class="m">✓</span> Har javobda modda raqamini ko'rsatadi</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS FLOW -->
+<section>
+  <div class="wrap">
+    <div class="kicker">Qanday ishlaydi</div>
+    <h2>Bitta savol — to'rt qadamda javob</h2>
+    <p class="lead">Foydalanuvchi savol yozgandan to javob olgungacha bot ichida shu jarayon kechadi:</p>
+    <div class="flow">
+      <div class="step">
+        <div class="n">1</div>
+        <div class="e">✍️</div>
+        <h4>Savol</h4>
+        <p>Foydalanuvchi o'zbek yoki rus tilida yozadi</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="step">
+        <div class="n">2</div>
+        <div class="e">🔍</div>
+        <h4>Qidiruv</h4>
+        <p>Bazadan eng mos 5–8 modda topiladi</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="step">
+        <div class="n">3</div>
+        <div class="e">🤖</div>
+        <h4>AI o'ylaydi</h4>
+        <p>Claude moddalar asosida javob yozadi</p>
+      </div>
+      <div class="arrow">→</div>
+      <div class="step">
+        <div class="n">4</div>
+        <div class="e">✅</div>
+        <h4>Javob</h4>
+        <p>Modda raqami bilan foydalanuvchiga boradi</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="kicker">Tuzilishi</div>
+    <h2>Ikki qismdan iborat</h2>
+    <p class="lead">Birinchi qism faqat <b>bir marta</b> ishlaydi (kodeksni bazaga joylaydi). Ikkinchi qism esa <b>doimiy</b> ishlab, savollarga javob beradi.</p>
+    <div class="arch">
+      <div class="lane one">
+        <div class="label">1-qism<br><small>Bir marta</small></div>
+        <div class="boxes">
+          <div class="pill"><b>MANBA</b>lex.uz matni</div>
+          <div class="pill"><b>BO'LISH</b>Moddalarga ajratish</div>
+          <div class="pill"><b>SAQLASH</b>Vektor bazaga (ChromaDB)</div>
+        </div>
+      </div>
+      <div class="lane two">
+        <div class="label">2-qism<br><small>Doimiy</small></div>
+        <div class="boxes">
+          <div class="pill"><b>TELEGRAM</b>Savolni qabul qiladi</div>
+          <div class="pill"><b>QIDIRUV</b>Mos moddani topadi</div>
+          <div class="pill"><b>CLAUDE AI</b>Javob yozadi</div>
+          <div class="pill"><b>JAVOB</b>Foydalanuvchiga yuboradi</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP TIMELINE -->
+<section>
+  <div class="wrap">
+    <div class="kicker">Yo'l xaritasi</div>
+    <h2>6 qadamda tayyor bo'ladi</h2>
+    <p class="lead">Loyihani boshidan oxirigacha shu tartibda quramiz:</p>
+    <div class="tl">
+      <div class="ti">
+        <div class="dot">1</div>
+        <h4>Kalit va token olish</h4>
+        <p>Anthropic'dan AI kaliti va Telegram'dagi <b>@BotFather</b>'dan bot tokeni olinadi.</p>
+      </div>
+      <div class="ti">
+        <div class="dot">2</div>
+        <h4>Loyiha skeletini yaratish</h4>
+        <p>Kerakli fayllar va kutubxonalar ro'yxati tayyorlanadi. Kalitlar maxfiy faylda saqlanadi.</p>
+        <span class="file">requirements.txt · .env · README.md</span>
+      </div>
+      <div class="ti">
+        <div class="dot">3</div>
+        <h4>Kodeks matnini olish</h4>
+        <p>lex.uz'dan Soliq kodeksining o'zbekcha va ruscha matni olinadi va faylga saqlanadi.</p>
+        <span class="file">fetch_taxcode.py → data/uz.txt, data/ru.txt</span>
+      </div>
+      <div class="ti">
+        <div class="dot">4</div>
+        <h4>Matnni bazaga yuklash</h4>
+        <p>Matn moddalarga bo'linib, qidiruvga tayyor holda vektor bazaga joylanadi.</p>
+        <span class="file">ingest.py → chroma_db/</span>
+      </div>
+      <div class="ti">
+        <div class="dot">5</div>
+        <h4>Bot logikasini yozish</h4>
+        <p>Til aniqlash, modda qidirish, Claude'ga yuborish va javob qaytarish — hammasi shu yerda.</p>
+        <span class="file">bot.py</span>
+      </div>
+      <div class="ti">
+        <div class="dot">6</div>
+        <h4>Sinash va ishga tushirish</h4>
+        <p>Telegramda test savollar beriladi, javoblar tekshiriladi. Keyin doimiy serverga ko'chiriladi.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="kicker">Texnologiyalar</div>
+    <h2>Nimalardan foydalanamiz</h2>
+    <p class="lead">Barchasi mashhur, ishonchli va asosan bepul vositalar:</p>
+    <div class="tech">
+      <div class="card">
+        <div class="e">🐍</div>
+        <h4>Python</h4>
+        <p>Dasturlash tili — bunday botlar uchun eng qulay tanlov.</p>
+      </div>
+      <div class="card">
+        <div class="e">✈️</div>
+        <h4>python-telegram-bot</h4>
+        <p>Telegram bilan bog'lanish uchun kutubxona.</p>
+        <span class="free">Bepul</span>
+      </div>
+      <div class="card">
+        <div class="e">🧠</div>
+        <h4>Claude AI</h4>
+        <p>Savolga aqlli javob yozadigan model (sonnet — arzon variant).</p>
+      </div>
+      <div class="card">
+        <div class="e">🗂️</div>
+        <h4>ChromaDB</h4>
+        <p>Moddalarni saqlaydigan vektor baza. Server kerak emas.</p>
+        <span class="free">Bepul</span>
+      </div>
+      <div class="card">
+        <div class="e">🌍</div>
+        <h4>Multilingual model</h4>
+        <p>O'zbek va rus matnini "tushunadigan" qidiruv modeli.</p>
+        <span class="free">Bepul · lokal</span>
+      </div>
+      <div class="card">
+        <div class="e">📄</div>
+        <h4>BeautifulSoup</h4>
+        <p>lex.uz sahifasidan matnni ajratib olish uchun.</p>
+        <span class="free">Bepul</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COST -->
+<section>
+  <div class="wrap">
+    <div class="kicker">Xarajat</div>
+    <h2>Nima uchun juda arzon</h2>
+    <p class="lead">Deyarli hamma narsa bepul. Yagona haqiqiy xarajat — bu AI javoblari, u ham juda kam.</p>
+    <div class="cost">
+      <div class="card costcard">
+        <div class="row"><span>🌍 Matnni qidirish (embedding)</span><span class="price free-t">Bepul</span></div>
+        <div class="row"><span>🗂️ Vektor baza (ChromaDB)</span><span class="price free-t">Bepul</span></div>
+        <div class="row"><span>✈️ Telegram bot</span><span class="price free-t">Bepul</span></div>
+        <div class="row"><span>💻 Boshida — o'z kompyuterda</span><span class="price free-t">Bepul</span></div>
+        <div class="row"><span>🧠 Claude AI javoblari</span><span class="price pay-t">Har savol ~ bir necha sent</span></div>
+      </div>
+      <div class="note-box">
+        <p>💡 <b>Maslahat:</b> boshida hamma narsani o'z kompyuteringizda sinab ko'rasiz — bu butunlay bepul. Bot yaxshi ishlaganiga ishonch hosil qilgach, uni doimiy ishlashi uchun arzon serverga (VPS) ko'chirasiz.</p>
+        <p style="margin-top:14px">Murakkab keyslar uchun kuchliroq <b>Claude Opus</b> modeliga bitta sozlama orqali o'tish mumkin — bu sifatni oshiradi, xarajatni biroz ko'taradi.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEGAL NOTES -->
+<section style="background:#fff;border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="kicker">Muhim eslatmalar</div>
+    <h2>E'tiborga olinadigan nuqtalar</h2>
+    <div class="legal" style="margin-top:6px">
+      <div class="item">
+        <div class="e">🔖</div>
+        <div><h4>Modda raqami doim ko'rsatiladi</h4><p>Foydalanuvchi javobni o'zi tekshira oladi — ishonch oshadi.</p></div>
+      </div>
+      <div class="item">
+        <div class="e">⚠️</div>
+        <div><h4>Bu rasmiy maslahat emas</h4><p>Bot ma'lumot beradi; murakkab holatlarda mutaxassisga murojaat tavsiya etiladi.</p></div>
+      </div>
+      <div class="item">
+        <div class="e">🔄</div>
+        <div><h4>Kodeksni yangilab turish</h4><p>Qonun o'zgarsa, matnni qaytadan yuklash kifoya — modelni o'qitish shart emas.</p></div>
+      </div>
+      <div class="item">
+        <div class="e">🔐</div>
+        <div><h4>Kalitlar maxfiy qoladi</h4><p>API kalitlar maxfiy faylda saqlanadi va hech qachon ommaga chiqmaydi.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><b>Soliq Bot</b> — O'zbekiston Respublikasi Soliq kodeksi bo'yicha aqlli yordamchi</p>
+    <p style="margin-top:6px;opacity:.7">Yondashuv: RAG · Til: O'zbek + Rus · Manba: lex.uz</p>
+  </div>
+</footer>
+
+</body>
+</html>
